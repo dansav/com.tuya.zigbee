@@ -76,33 +76,33 @@ const getDataValue = (dpValue) => {
 
 const dataPointToCapability = {
   [dataPoints.presence]: async (device, value) => {
-    this.log(`presence: ${value} (type ${typeof value})`);
+    device.log(`presence: ${value} (type ${typeof value})`);
     await device.setCapabilityValue("alarm_motion", value === 1);
   },
   [dataPoints.sensitivity]: (device, value) => {
-    this.debug(`sensitivity: ${value} (type ${typeof value})`);
+    device.debug(`sensitivity: ${value} (type ${typeof value})`);
   },
   [dataPoints.nearDetection]: (device, value) => {
-    this.debug(`nearDetection: ${value} (type ${typeof value})`);
+    device.debug(`nearDetection: ${value} (type ${typeof value})`);
   },
   [dataPoints.farDetection]: (device, value) => {
-    this.debug(`farDetection: ${value} (type ${typeof value})`);
+    device.debug(`farDetection: ${value} (type ${typeof value})`);
   },
   [dataPoints.detectionDelay]: (device, value) => {
-    this.debug(`detectionDelay: ${value} (type ${typeof value})`);
+    device.debug(`detectionDelay: ${value} (type ${typeof value})`);
   },
   [dataPoints.detectionClearDelay]: (device, value) => {
-    this.debug(`detectionClearDelay: ${value} (type ${typeof value})`);
+    device.debug(`detectionClearDelay: ${value} (type ${typeof value})`);
   },
   [dataPoints.luminance]: async (device, value) => {
-    this.debug(`luminance: ${value} (type ${typeof value})`);
+    device.debug(`luminance: ${value} (type ${typeof value})`);
     await device.setCapabilityValue("measure_luminance", value);
   },
   [dataPoints.distance]: (device, value) => {
-    this.debug(`distance: ${value} (type ${typeof value})`);
+    device.debug(`distance: ${value} (type ${typeof value})`);
   },
   [dataPoints.selfCheck]: (device, value) => {
-    this.info(
+    device.log(
       `selfCheck: ${value} (type ${typeof value}, ${selfCheckEnum[value]})`
     );
   },
