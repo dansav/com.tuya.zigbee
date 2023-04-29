@@ -1,0 +1,26 @@
+{
+  "id": "smart_human_presence_sensor",
+  "name": {
+    "en": "Smart Human Presence Sensor"
+  },
+  "class": "sensor",
+  "platforms": ["local"],
+  "connectivity": ["zigbee"],
+  "capabilities": ["measure_luminance", "alarm_motion"],
+
+  "zigbee": {
+    "manufacturerName": ["_TZE204_ztc6ggyl"],
+    "productId": ["TS0601"],
+    "endpoints": {
+      "1": {
+        "clusters": [0, 4, 5, 61184],
+        "bindings": [25, 10]
+      }
+    },
+    "learnmode": {
+      "instruction": {
+        "en": ""
+      }
+    }
+  }
+}

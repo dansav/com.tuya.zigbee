@@ -1,0 +1,57 @@
+[
+  {
+    "id": "sensitivity",
+    "type": "number",
+    "label": { "en": "Sensitivity" },
+    "value": 7,
+    "attr": {
+      "min": 0,
+      "max": 9,
+      "step": 1
+    }
+  },
+  {
+    "id": "near_detection",
+    "type": "number",
+    "label": { "en": "Near Detection Threshold (cm)" },
+    "value": 60,
+    "attr": {
+      "min": 0,
+      "max": 1000,
+      "step": 1
+    }
+  },
+  {
+    "id": "far_detection",
+    "type": "number",
+    "label": { "en": "Far Detection Threshold (cm)" },
+    "value": 600,
+    "attr": {
+      "min": 0,
+      "max": 1000,
+      "step": 1
+    }
+  },
+  {
+    "id": "detection_delay",
+    "type": "number",
+    "label": { "en": "Detection Delay (s)" },
+    "value": 1,
+    "attr": {
+      "min": 0,
+      "max": 10,
+      "step": 0.1
+    }
+  },
+  {
+    "id": "detection_clear_delay",
+    "type": "number",
+    "label": { "en": "Detection Clear Delay (s)" },
+    "value": 150,
+    "attr": {
+      "min": 0,
+      "max": 1500,
+      "step": 1
+    }
+  }
+]
