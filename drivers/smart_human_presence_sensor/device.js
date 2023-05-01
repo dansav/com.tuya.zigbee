@@ -76,7 +76,7 @@ const getDataValue = (dpValue) => {
 
 const dataPointToCapability = {
   [dataPoints.presence]: async (device, value) => {
-    device.log(`presence: ${value} (type ${typeof value})`);
+    device.log(`presence: ${value === 1} (${value})`);
     await device.setCapabilityValue("alarm_motion", value === 1);
   },
   [dataPoints.sensitivity]: (device, value) => {
@@ -102,9 +102,7 @@ const dataPointToCapability = {
     device.debug(`distance: ${value} (type ${typeof value})`);
   },
   [dataPoints.selfCheck]: (device, value) => {
-    device.log(
-      `selfCheck: ${value} (type ${typeof value}, ${selfCheckEnum[value]})`
-    );
+    device.log(`selfCheck: ${selfCheckEnum[value]} (${value}))`);
   },
 };
 
