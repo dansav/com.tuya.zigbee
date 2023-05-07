@@ -53,5 +53,27 @@
       "max": 1500,
       "step": 1
     }
+  },
+  {
+    "type": "group",
+    "label": { "en": "Status" },
+    "children": [
+      {
+        "id": "device_self_check",
+        "type": "label",
+        "label": {
+          "en": "Self check"
+        },
+        "value": "..."
+      },
+      {
+        "id": "presence_distance",
+        "type": "label",
+        "label": {
+          "en": "Distance"
+        },
+        "value": "..."
+      }
+    ]
   }
 ]

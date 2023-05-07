@@ -12,8 +12,9 @@ const dataPoints = {
   sensitivity: 2,
   nearDetection: 3,
   farDetection: 4,
-  detectionDelay: 101,
-  detectionClearDelay: 102,
+  presenceDetectionDelay: 101,
+  presenceClearDelay: 102,
+  undocumented103: 103,
   luminance: 104,
   distance: 9,
   selfCheck: 6,
@@ -29,7 +30,7 @@ const selfCheckEnum = {
 };
 
 const clamp = (value, min, max) => {
-  return value < min ? min : value > max ? max : value;
+  return Math.max(min, Math.min(max, value));
 };
 
 // note: the `dataTypes`, `convertMultiByteNumberPayloadToSingleDecimalNumber`, `getDataValue` are copied (but already duplicated) from other drivers. could probably be placed in a common place.
@@ -76,33 +77,50 @@ const getDataValue = (dpValue) => {
 
 const dataPointToCapability = {
   [dataPoints.presence]: async (device, value) => {
-    device.log(`presence: ${value === 1} (${value})`);
+    device.log(`presence: ${value === 1}`);
     await device.setCapabilityValue("alarm_motion", value === 1);
   },
   [dataPoints.sensitivity]: (device, value) => {
-    device.debug(`sensitivity: ${value} (type ${typeof value})`);
+    // this is an echo of the configured sensitivity on the device.
+    device.log(`sensitivity: ${value}`);
+    return Promise.resolve();
   },
   [dataPoints.nearDetection]: (device, value) => {
-    device.debug(`nearDetection: ${value} (type ${typeof value})`);
+    // this is an echo of the configured nearDetection on the device.
+    device.log(`nearDetection: ${value}`);
+    return Promise.resolve();
   },
   [dataPoints.farDetection]: (device, value) => {
-    device.debug(`farDetection: ${value} (type ${typeof value})`);
+    // this is an echo of the configured farDetection on the device.
+    device.log(`farDetection: ${value}`);
+    return Promise.resolve();
   },
-  [dataPoints.detectionDelay]: (device, value) => {
-    device.debug(`detectionDelay: ${value} (type ${typeof value})`);
+  [dataPoints.presenceDetectionDelay]: (device, value) => {
+    // this is an echo of the configured presenceDetectionDelay on the device.
+    device.log(`presenceDetectionDelay: ${value}`);
+    return Promise.resolve();
   },
-  [dataPoints.detectionClearDelay]: (device, value) => {
-    device.debug(`detectionClearDelay: ${value} (type ${typeof value})`);
+  [dataPoints.presenceClearDelay]: (device, value) => {
+    // this is an echo of the configured presenceClearDelay on the device.
+    device.log(`presenceClearDelay: ${value}`);
+    return Promise.resolve();
   },
   [dataPoints.luminance]: async (device, value) => {
-    device.debug(`luminance: ${value} (type ${typeof value})`);
+    device.log(`luminance: ${value}`);
     await device.setCapabilityValue("measure_luminance", value);
   },
-  [dataPoints.distance]: (device, value) => {
-    device.debug(`distance: ${value} (type ${typeof value})`);
+  [dataPoints.distance]: async (device, value) => {
+    device.log(`distance: ${value}`);
+    await device.setSettings({ presence_distance: `${value} cm` });
   },
-  [dataPoints.selfCheck]: (device, value) => {
+  [dataPoints.selfCheck]: async (device, value) => {
     device.log(`selfCheck: ${selfCheckEnum[value]} (${value}))`);
+    await device.setSettings({ device_self_check: `${selfCheckEnum[value]}` });
+  },
+  [dataPoints.undocumented103]: (device, value) => {
+    // not sure why the device sends this data point. it seems to always be a string with a single space.
+    device.log(`undocumented data point 103. value: '${value}'`);
+    return Promise.resolve();
   },
 };
 
@@ -117,10 +135,13 @@ const settingsKeysToTuyaDataPoint = {
     device.writeData32(dataPoints.farDetection, value);
   },
   detection_delay: (device, value) => {
-    device.writeData32(dataPoints.detectionDelay, clamp(value * 10, 0, 100));
+    device.writeData32(
+      dataPoints.presenceDetectionDelay,
+      clamp(value * 10, 0, 100)
+    );
   },
   detection_clear_delay: (device, value) => {
-    device.writeData32(dataPoints.detectionClearDelay, value);
+    device.writeData32(dataPoints.presenceClearDelay, value);
   },
 };
 
@@ -145,23 +166,17 @@ class smart_human_presence_sensor extends TuyaSpecificClusterDevice {
 
   processResponse = async (data) => {
     const dp = data.dp;
-
-    // the data point 103 is undocumented
-    if (dp === 103) return;
-
     const measuredValue = getDataValue(data);
-    this.log("processing response", dp, measuredValue);
 
     const fn = dataPointToCapability[dp];
     if (fn) {
       try {
-        await dataPointToCapability[dp](this, measuredValue);
+        await fn(this, measuredValue);
       } catch (err) {
-        this.log(`Error setting capability value for data point.`, err);
+        this.error(`Could not update capability value for data point.`, err);
       }
     } else {
-      console.log(this.warn);
-      this.warn(`Unhandled data point: ${dp}`);
+      this.error(`Unhandled data point: ${dp}`);
     }
   };
 }
