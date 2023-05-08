@@ -6,7 +6,7 @@
   "class": "sensor",
   "platforms": ["local"],
   "connectivity": ["zigbee"],
-  "capabilities": ["measure_luminance", "alarm_motion"],
+  "capabilities": ["meter_distance", "measure_luminance", "alarm_motion"],
 
   "zigbee": {
     "manufacturerName": ["_TZE204_ztc6ggyl"],
@@ -21,6 +21,11 @@
       "instruction": {
         "en": ""
       }
+    }
+  },
+  "energy": {
+    "approximation": {
+      "usageConstant": 5
     }
   }
 }

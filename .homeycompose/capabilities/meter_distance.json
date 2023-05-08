@@ -1,0 +1,12 @@
+{
+  "type": "number",
+  "min": 0,
+  "max": 1000,
+  "step": 1,
+  "decimals": 0,
+  "getable": true,
+  "setable": false,
+  "units": { "en": "cm" },
+  "title": { "en": "Distance" },
+  "uiComponent": "sensor"
+}

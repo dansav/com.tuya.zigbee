@@ -111,14 +111,15 @@ const dataPointToCapability = {
   },
   [dataPoints.distance]: async (device, value) => {
     device.log(`distance: ${value}`);
-    await device.setSettings({ presence_distance: `${value} cm` });
+    await device.setCapabilityValue("meter_distance", value);
   },
   [dataPoints.selfCheck]: async (device, value) => {
     device.log(`selfCheck: ${selfCheckEnum[value]} (${value}))`);
     await device.setSettings({ device_self_check: `${selfCheckEnum[value]}` });
   },
   [dataPoints.undocumented103]: (device, value) => {
-    // not sure why the device sends this data point. it seems to always be a string with a single space.
+    // not sure why the device sends this data point.
+    // it seems to always be a string with a single space.
     device.log(`undocumented data point 103. value: '${value}'`);
     return Promise.resolve();
   },
@@ -152,6 +153,10 @@ class smart_human_presence_sensor extends TuyaSpecificClusterDevice {
     zclNode.endpoints[1].clusters.tuya.on("response", (value) => {
       this.processResponse(value);
     });
+
+    if (this.hasCapability("meter_distance") === false) {
+      await this.addCapability("meter_distance");
+    }
   };
 
   onSettings = ({ oldSettings, newSettings, changedKeys }) => {
